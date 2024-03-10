@@ -1,51 +1,29 @@
 import React, { useState, useRef } from "react";
+import { debounce } from "../utils/Debounce";
 
 function CountryDataForm(props) {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const inputRef = useRef(null);
+  
+  
+  const debouncedFetch = debounce(props.onSearch, 500);
+
   const handleChange = (e) => {
     setInput(e.target.value);
-    props.onSearch(e.target.value);
+    debouncedFetch(e.target.value);
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    props.onSubmit({ trackUrl: input, _id: props.edit?._id });
-    setInput("");
-  };
+  
 
   return (
-    <form onSubmit={handleSubmit} className="country-form">
-      {props.edit ? (
-        <>
-          <input
-            placeholder="Update country"
-            value={input}
-            onChange={handleChange}
-            name="text"
-            ref={inputRef}
-            className="country-input edit"
-          />
-          <button onClick={handleSubmit} className="country-button edit">
-            Update
-          </button>
-        </>
-      ) : (
-        <>
-          <input
-            placeholder="Search country"
-            value={input}
-            onChange={handleChange}
-            name="text"
-            className="country-input"
-            ref={inputRef}
-          />
-          <button onClick={handleSubmit} className="country-button">
-            Submit
-          </button>
-        </>
-      )}
+    <form className="country-form">
+      <input
+        placeholder="Search country"
+        value={input}
+        onChange={handleChange}
+        name="text"
+        className="country-input"
+        ref={inputRef}
+      />
     </form>
   );
 }
